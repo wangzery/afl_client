@@ -238,11 +238,19 @@ class afl_client:
                             httpConn.request(method='GET',url='/', body=None, headers=headers2)
                             httpRep = httpConn.getresponse()
                         except:
-                            print 'Failed to send exit-sig, maybe crash.'
-                            sk.shutdown(2)
-                            sk.close()
-                            httpConn.close()
-                            break
+                            print 'Failed to send exit-sig, try again soon.'
+                            time.sleep(5)
+                            #try again
+                            try:
+                                httpConn.request(method='GET',url='/', body=None, headers=headers2)
+                                httpRep = httpConn.getresponse()
+                            except:
+                                print 'Failed to send exit-sig again, maybe crash.'
+                                sk.shutdown(2)
+                                sk.close()
+                                httpConn.close()
+                                break
+                            continue
                 continue
             else:
                 print 'No hello here'
