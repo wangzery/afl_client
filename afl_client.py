@@ -168,7 +168,7 @@ class afl_client:
         'Content-Length':'999',
         }
 
-        self.timer = Timer(3.0, self.sendExitSigbyTimer)
+        
         while True:
             print 'Waitting for connecting...'
             sk = socket.socket()
@@ -179,6 +179,7 @@ class afl_client:
             sk.listen(128)
             flag = False
             if flag:
+                self.timer = Timer(3.0, self.sendExitSigbyTimer)
                 self.timer.start()
                 conn, address = sk.accept()
                 self.timer.cancel()
@@ -194,7 +195,7 @@ class afl_client:
                 print 'Handshaking success!'
 
                 while True:
-                    #timer = Timer(3.0, self.sendExitSig, args=httpConn)
+                    self.timer = Timer(3.0, self.sendExitSigbyTimer)
                     self.timer.start()
                     recvData = conn.recv(2048)
                     self.timer.cancel()
@@ -260,7 +261,7 @@ class afl_client:
         
 
     def sendExitSigbyTimer(self):
-        #self.timer.cancel()
+        self.timer.cancel()
         headers2 = {'User-Agent':'afl_fuzz_exit', 
         'Accept':'text/plain', 
         'Accept-Language':'en-US', 
@@ -284,6 +285,7 @@ class afl_client:
         except:
             print 'Timer failed to send exit-sig.'
         finally:
+            self.timer = Timer(3.0, self.sendExitSigbyTimer)
             self.timer.start()
 
 
