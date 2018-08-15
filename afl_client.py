@@ -179,7 +179,7 @@ class afl_client:
             sk.listen(128)
             flag = False
             if flag:
-                self.timer = Timer(3.0, self.sendExitSigbyTimer)
+                self.timer = Timer(10.0, self.sendExitSigbyTimer)
                 self.timer.start()
                 conn, address = sk.accept()
                 self.timer.cancel()
@@ -195,11 +195,11 @@ class afl_client:
                 print 'Handshaking success!'
 
                 while True:
-                    self.timer = Timer(3.0, self.sendExitSigbyTimer)
+                    self.timer = Timer(10.0, self.sendExitSigbyTimer)
                     self.timer.start()
                     recvData = conn.recv(2048)
                     self.timer.cancel()
-                    print "Recv testcase:%s"%recvData
+                    print "Recv testcase:%s(%x)"%(recvData, ord(recvData))
                     self.header2bFuzz = 'User-Agent'
                     
                     if fuzzType == 'header':
@@ -285,7 +285,7 @@ class afl_client:
         except:
             print 'Timer failed to send exit-sig.'
         finally:
-            self.timer = Timer(3.0, self.sendExitSigbyTimer)
+            self.timer = Timer(10.0, self.sendExitSigbyTimer)
             self.timer.start()
 
 
